@@ -47,7 +47,7 @@ public:
 
 int main()
 {
-    fstream userfile("User.txt",ios::app);
+    fstream userfile("User.txt", ios::app);
     if (!userfile.is_open())
     {
         cout << "Failed to open file!" << endl;
@@ -72,12 +72,16 @@ failed_case:
         cout << "Enter Pass:";
         cin >> pass;
         bool loginSuccessful = false;
-        while (userfile >> name1 >> email1 >> pass1)
+        userfile.seekg(0, ios::beg);
+        ifstream infile("User.txt");
+        while (infile >> name1 >> email1 >> pass1)
         {
+
             if (email == email1 && pass == pass1)
             {
                 cout << "Login Successful\n";
                 loginSuccessful = true;
+                infile.close();
                 break;
             }
         }
