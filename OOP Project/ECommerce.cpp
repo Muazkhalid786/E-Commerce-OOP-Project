@@ -7,54 +7,85 @@
 #include <cstdlib>
 using namespace std;
 
-
-class Product {
-    private:
+class Product
+{
+private:
     string productName;
     int productId;
     int productPrice;
     int productQty;
-    public:
-    Product() {
 
+public:
+    Product()
+    {
     }
+    void add()
+    {
 
-    Product(string name, string id, string price, string qty) {
+        fstream product("product.txt", ios::app);
+        product << productId << "\t" << productName << "\t" << productPrice << "\t" << productQty << endl;
+        product.close();
+    }
+    Product(string name, string id, string price, string qty)
+    {
         productName = name;
         productId = stoi(id);
         productPrice = stoi(price);
-        productQty = stoi(qty); 
+        productQty = stoi(qty);
+    }
+    friend istream &operator>>(istream &is, Product &p)
+    {
+        ifstream in("product.txt");
+        int id, price, qty;
+        string name;
+        while (in >> id >> name >> price >> qty)
+        {
+        }
+        p.productId = id + 1;
+        cout << "Product Name: ";
+        is >> p.productName;
+
+        cout << "Product Price: ";
+        is >> p.productPrice;
+
+        cout << "Product Quantity: ";
+        is >> p.productQty;
+        return is;
     }
 
-    void getInfo () {
+    void getInfo()
+    {
         cout << "Product Id: " << productId << endl;
         cout << "Product Name: " << productName << endl;
         cout << "Product Price: " << productPrice << endl;
         cout << "Product Qty: " << productQty << endl;
-
     }
-    string getProductName() {
+    string getProductName()
+    {
         return productName;
     }
 };
 
-class ShoppingCart {
-    private:
+class ShoppingCart
+{
+private:
     Product products[100];
     static int totalItems;
     static int index;
     static int totalPrice;
 
-    public:
-    void showProducts() {
-        
-            for (int i = 0; i < index; i++) {
-                products[i].getInfo();
-            }
-        
+public:
+    void showProducts()
+    {
+
+        for (int i = 0; i < index; i++)
+        {
+            products[i].getInfo();
+        }
     }
 
-    void addProduct(string name, string id, string price,string qty) {
+    void addProduct(string name, string id, string price, string qty)
+    {
         Product prod(name, id, price, qty);
         products[index] = prod;
         index++;
@@ -62,7 +93,8 @@ class ShoppingCart {
         totalPrice += 12000;
     }
 
-    void getTotalPrice() {
+    void getTotalPrice()
+    {
         cout << "Total Items in Cart: " << totalItems << endl;
         cout << "Total Cart Price: " << totalPrice << endl;
     }
@@ -70,7 +102,6 @@ class ShoppingCart {
 int ShoppingCart::index = 0;
 int ShoppingCart::totalPrice = 0;
 int ShoppingCart::totalItems = 0;
-
 
 class Person
 {
@@ -136,6 +167,7 @@ failed_case:
     Person p1;
     bool loginSuccessful = false;
     system("cls");
+    bool is_admin = false;
     if (ch == 1)
     {
         cout << "Enter Email:";
@@ -149,6 +181,11 @@ failed_case:
 
             if (email == email1 && pass == pass1)
             {
+                if (email == "itzmajo786@gmail.com" || email == "11")
+                {
+                    is_admin = true;
+                    cout << "Welcome Admin\n";
+                }
                 cout << "Login Successful\n";
                 loginSuccessful = true;
                 infile.close();
@@ -172,42 +209,66 @@ failed_case:
     }
 
     userfile.close();
-    
 
-        cout << "Welcome to Daraz CMD" << endl;
-    while(loginSuccessful) {
+    cout << "Welcome to Daraz CMD" << endl;
+    while (loginSuccessful)
+    {
         cout << "1 - Show All products " << endl;
         cout << "2 - Add Product to Cart " << endl;
         cout << "3 - Show Cart " << endl;
         cout << "4 - Show Cart Details" << endl;
+        if (is_admin)
+        {
+            cout << "5 - Add Product" << endl;
+        }
+
+        cout << "6 - Logout" << endl;
         cin >> ch;
 
-        if (ch == 1) {
-        ifstream infile("products.txt");
-        cout << "==========================================================================="<<endl;
-        cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(20) << "Name" <<endl;
-        cout << "==========================================================================="<<endl;
+        if (ch == 1)
+        {
+            system("cls");
+            ifstream infile("product.txt");
+            if (!infile.is_open())
+            {
+                cout << "Error" << endl;
+            }
+            cout << "===========================================================================" << endl;
+            cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(18) << "Name" << endl;
+            cout << "===========================================================================" << endl;
 
+            while (infile >> productId >> productName >> productPrice >> productQty)
+            {
+                // replace(productName.begin(), productName.end(), '_', ' ');
 
-        while(infile >> productId >> productName >> productPrice >> productQty) {
-            replace(productName.begin(), productName.end(), '_', ' ');
-            cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(40) << productName << endl;
-
+                cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(20) << productName << endl;
+            }
+            infile.close();
         }
-infile.close();
-        }
-        
-        else if (ch == 2) {
+
+        else if (ch == 2)
+        {
             cart.addProduct("Mobile", "2", "15000", "14");
         }
-        else if (ch == 3) {
+        else if (ch == 3)
+        {
             cart.showProducts();
         }
-        else if (ch == 4) {
+        else if (ch == 4)
+        {
             cart.getTotalPrice();
         }
+        else if (ch == 5 && is_admin)
+        {
 
-
+            Product p;
+            cin >> p;
+            p.add();
+        }
+        else if (ch == 6)
+        {
+            return 0;
+        }
     }
 
     return 0;
