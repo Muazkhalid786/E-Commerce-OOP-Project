@@ -26,12 +26,12 @@ public:
         product << productId << "\t" << productName << "\t" << productPrice << "\t" << productQty << endl;
         product.close();
     }
-    Product(string name, string id, string price, string qty)
+    Product(string name, int id, int price, int qty)
     {
         productName = name;
-        productId = stoi(id);
-        productPrice = stoi(price);
-        productQty = stoi(qty);
+        productId = id;
+        productPrice = price;
+        productQty = qty;
     }
     friend istream &operator>>(istream &is, Product &p)
     {
@@ -84,13 +84,29 @@ public:
         }
     }
 
-    void addProduct(string name, string id, string price, string qty)
+    void addProduct(int choice, int qty)
     {
-        Product prod(name, id, price, qty);
-        products[index] = prod;
-        index++;
-        totalItems++;
-        totalPrice += 12000;
+        int ID, PRICE, QTY;
+        string Name;
+        ifstream product("product.txt");
+
+        while (product >> ID >> Name >> PRICE >> QTY)
+        {
+            if (qty > QTY)
+            {
+                cout << "You can't enter more than " << QTY << endl;
+                return;
+            }
+            if (choice == ID)
+            {
+                Product Temp(Name, ID, PRICE, qty);
+                products[index] = Temp;
+                index++;
+                totalPrice += PRICE;
+                totalItems += qty;
+            }
+        }
+        product.close();
     }
 
     void getTotalPrice()
@@ -217,6 +233,7 @@ failed_case:
         cout << "2 - Add Product to Cart " << endl;
         cout << "3 - Show Cart " << endl;
         cout << "4 - Show Cart Details" << endl;
+        cout << "4 - Place order" << endl;
         if (is_admin)
         {
             cout << "5 - Add Product" << endl;
@@ -248,7 +265,13 @@ failed_case:
 
         else if (ch == 2)
         {
-            cart.addProduct("Mobile", "2", "15000", "14");
+            int qty;
+            int choice;
+            cout << "Enter Poduct ID";
+            cin >> choice;
+            cout << "Enter Quantity";
+            cin >> qty;
+            cart.addProduct(choice, qty);
         }
         else if (ch == 3)
         {
