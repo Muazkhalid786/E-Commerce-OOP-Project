@@ -1,4 +1,2 @@
-1 Laptop 45000 200
-2 Iphone	450000	200
-3 Facewash	6666	12
-4	chair	1800	200
+1	Charger	350	290
+2	Iphone	60000	20

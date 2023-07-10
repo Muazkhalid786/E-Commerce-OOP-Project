@@ -9,7 +9,7 @@ using namespace std;
 
 class Product
 {
-private:
+protected:
     string productName;
     int productId;
     int productPrice;
@@ -32,6 +32,10 @@ public:
         productId = id;
         productPrice = price;
         productQty = qty;
+    }
+    int getquantity()
+    {
+        return productQty;
     }
     friend istream &operator>>(istream &is, Product &p)
     {
@@ -65,7 +69,37 @@ public:
         return productName;
     }
 };
+class Electronic : public Product
+{
+private:
+    string warranty;
+    string MaxPower;
 
+public:
+    Electronic()
+    {
+    }
+
+    friend istream &operator>>(istream &is, Electronic &p)
+    {
+        ifstream in("product.txt");
+        int id, price, qty;
+        string name;
+        while (in >> id >> name >> price >> qty)
+        {
+        }
+        p.productId = id + 1;
+        cout << "Product Name: ";
+        is >> p.productName;
+
+        cout << "Product Price: ";
+        is >> p.productPrice;
+
+        cout << "Product Quantity: ";
+        is >> p.productQty;
+        return is;
+    }
+};
 class ShoppingCart
 {
 private:
@@ -107,6 +141,60 @@ public:
             }
         }
         product.close();
+    }
+    void place()
+    {
+        ofstream outfile("product.txt", ios::app);
+        ifstream infile("product.txt");
+        ofstream tempfile("temp.txt", ios::app);
+
+        int ID, PRICE, QTY;
+        string Name;
+        while (infile >> ID >> Name >> PRICE >> QTY)
+        {
+        }
+    }
+    void placeOrder()
+    {
+        ofstream outfile("product.txt", ios::app);
+        ifstream infile("product.txt");
+        ofstream tempfile("temp.txt", ios::app);
+
+        int ID, PRICE, QTY;
+        string Name;
+
+        while (infile >> ID >> Name >> PRICE >> QTY)
+        {
+            for (int i = 0; i < index; i++)
+            {
+                if (Name == products[i].getProductName())
+                {
+                    int remainingQty = QTY - products[i].getquantity();
+                    if (remainingQty >= 0)
+                    {
+                        tempfile << ID << "\t" << Name << "\t" << PRICE << "\t" << remainingQty << endl;
+                        break;
+                    }
+                    else
+                    {
+                        cout << "Insufficient quantity available for product: " << Name << endl;
+                    }
+                }
+            }
+        }
+
+        infile.close();
+        outfile.close();
+        tempfile.close();
+
+        remove("product.txt");
+        rename("temp.txt", "product.txt");
+
+        totalItems = 0;
+        totalPrice = 0;
+        index = 0;
+
+        cout << "Order placed successfully!" << endl;
     }
 
     void getTotalPrice()
@@ -233,13 +321,13 @@ failed_case:
         cout << "2 - Add Product to Cart " << endl;
         cout << "3 - Show Cart " << endl;
         cout << "4 - Show Cart Details" << endl;
-        cout << "4 - Place order" << endl;
+        cout << "5 - Place order" << endl;
         if (is_admin)
         {
-            cout << "5 - Add Product" << endl;
+            cout << "6 - Add Product" << endl;
         }
 
-        cout << "6 - Logout" << endl;
+        cout << "7 - Logout" << endl;
         cin >> ch;
 
         if (ch == 1)
@@ -281,14 +369,18 @@ failed_case:
         {
             cart.getTotalPrice();
         }
-        else if (ch == 5 && is_admin)
+        else if (ch == 5)
+        {
+            cart.placeOrder();
+        }
+        else if (ch == 6 && is_admin)
         {
 
             Product p;
             cin >> p;
             p.add();
         }
-        else if (ch == 6)
+        else if (ch == 7)
         {
             return 0;
         }
