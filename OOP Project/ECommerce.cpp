@@ -142,18 +142,7 @@ public:
         }
         product.close();
     }
-    void place()
-    {
-        ofstream outfile("product.txt", ios::app);
-        ifstream infile("product.txt");
-        ofstream tempfile("temp.txt", ios::app);
-
-        int ID, PRICE, QTY;
-        string Name;
-        while (infile >> ID >> Name >> PRICE >> QTY)
-        {
-        }
-    }
+   
     void placeOrder()
     {
         ofstream outfile("product.txt", ios::app);
