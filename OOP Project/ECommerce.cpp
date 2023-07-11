@@ -136,13 +136,13 @@ public:
                 Product Temp(Name, ID, PRICE, qty);
                 products[index] = Temp;
                 index++;
-                totalPrice += PRICE;
+                totalPrice += (PRICE * qty);
                 totalItems += qty;
             }
         }
         product.close();
     }
-   
+
     void placeOrder()
     {
         ofstream outfile("product.txt", ios::app);
@@ -168,6 +168,10 @@ public:
                     {
                         cout << "Insufficient quantity available for product: " << Name << endl;
                     }
+                }
+                else
+                {
+                    tempfile << ID << "\t" << Name << "\t" << PRICE << "\t" << QTY << endl;
                 }
             }
         }

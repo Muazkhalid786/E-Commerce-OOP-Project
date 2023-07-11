@@ -1,2 +1,3 @@
 1	Charger	350	290
 2	Iphone	60000	20
+3	Laptop_hp	45000	5
