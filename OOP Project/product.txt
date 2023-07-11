@@ -1,3 +1,2 @@
-1	Charger	350	290
-2	Iphone	60000	20
-3	Laptop_hp	45000	5
+1	iphone	50000	70	2-year
+2	Suit	2500	1000	Cotton
