@@ -5,313 +5,73 @@
 #include <algorithm>
 #include <iomanip>
 #include <cstdlib>
-#include <unistd.h>
 using namespace std;
 
-void showLogo() {
-cout<<"     ___            ________     .___  ___.      ___      .______       __  ___  _______ .___________." << endl;
-cout<<"    /   \\          |       /     |   \\/   |     /   \\     |   _  \\     |  |/  / |   ____||           |" << endl;
-cout<<"   /  ^  \\   ______`---/  /      |  \\  /  |    /  ^  \\    |  |_)  |    |  '  /  |  |__   `---|  |----`"<<endl;
-cout<<"  /  /_\\  \\ |______|  /  /       |  |\\/|  |   /  /_\\  \\   |      /     |    <   |   __|      |  | " << endl;    
-cout<<" /  _____  \\         /  /----.   |  |  |  |  /  _____  \\  |  |\\  \\----.|  .  \\  |  |____     |  |   "<<endl;  
-cout<<"/__/     \\__\\       /________|   |__|  |__| /__/     \\__\\ | _| `._____||__|\\__\\ |_______|    |__|  " << endl;
-                                                                                                         
 
-}
-
-void getInput() {
-    string pauseInput;
-    cout << endl << "Press any key & enter to go back to homepage" << endl;
-    cin >>pauseInput;
-}
-class Product
-{
-protected:
+class Product {
+    private:
     string productName;
-    static int productId;
+    int productId;
     int productPrice;
     int productQty;
+    public:
+    Product() {
 
-public:
-    Product()
-    {
     }
-    void add()
-    {
 
-        fstream product("product.txt", ios::app);
-        product << productId << "\t" << productName << "\t" << productPrice << "\t" << productQty << endl;
-        product.close();
-    }
-    Product(string name, int id, int price, int qty)
-    {
+    Product(string name, string id, string price, string qty) {
         productName = name;
-        //  productId = id;
-        productPrice = price;
-        productQty = qty;
-    }
-    int getquantity()
-    {
-        return productQty;
-    }
-    friend istream &operator>>(istream &is, Product &p)
-    {
-        ifstream in("product.txt");
-        int id, price, qty;
-        string name;
-        while (in >> id >> name >> price >> qty)
-        {
-        }
-        p.productId = id + 1;
-        cout << "Product Name: ";
-        is >> p.productName;
-
-        cout << "Product Price: ";
-        is >> p.productPrice;
-
-        cout << "Product Quantity: ";
-        is >> p.productQty;
-        return is;
+        productId = stoi(id);
+        productPrice = stoi(price);
+        productQty = stoi(qty); 
     }
 
-    void getInfo()
-    {
+    void getInfo () {
         cout << "Product Id: " << productId << endl;
         cout << "Product Name: " << productName << endl;
         cout << "Product Price: " << productPrice << endl;
         cout << "Product Qty: " << productQty << endl;
+
     }
-    string getProductName()
-    {
+    string getProductName() {
         return productName;
     }
 };
-class Electronic : public Product
-{
-private:
-    string Warr;
 
-public:
-    Electronic() {}
-    Electronic(string name, int id, int price, int qty, string type)
-    {
-        productId = id;
-        productName = name;
-        productPrice = price;
-        productQty = qty;
-        Warr = type;
-    }
-    friend istream &operator>>(istream &is, Electronic &p)
-    {
-        ifstream in("product.txt");
-        int id, price, qty;
-        string name, warr;
-        while (in >> id >> name >> price >> qty >> warr)
-        {
-        }
-        p.productId = id + 1;
-        cout << "Product Name: ";
-        is >> p.productName;
-
-        cout << "Product Price: ";
-        is >> p.productPrice;
-        cout << "Enter Warranty: ";
-        is >> p.Warr;
-        cout << "Product Quantity: ";
-        is >> p.productQty;
-        return is;
-    }
-    void add()
-    {
-
-        fstream product("product.txt", ios::app);
-        product << productId << "\t" << productName << "\t" << productPrice << "\t" << productQty << "\t" << Warr << endl;
-        product.close();
-    }
-};
-int Product::productId = 0;
-class ShoppingCart
-{
-private:
+class ShoppingCart {
+    private:
     Product products[100];
     static int totalItems;
     static int index;
     static int totalPrice;
 
-public:
-    void showProducts()
-    {
-
-        for (int i = 0; i < index; i++)
-        {
-            products[i].getInfo();
-        }
-        cout << endl;
- 
-        getInput();
-    }
-
-    void addProduct(int choice, int qty)
-    {
-        ofstream cart("cart.txt");
-        int ID, PRICE, QTY;
-        string Name, type;
-        ifstream product("product.txt");
-
-        while (product >> ID >> Name >> PRICE >> QTY >> type)
-        {
-            if (choice == ID)
-            {
-                if (qty > QTY)
-                {
-                    cout << "You can't enter more than " << QTY << endl;
-                    return;
-                }
-                else
-                {
-                    cart << ID << "\t" << Name << "\t" << PRICE << "\t" << qty << "\t"
-                         << "\t" << type << endl;
-                    Electronic Temp(Name, ID, PRICE, qty, type);
-                    products[index] = Temp;
-                    index++;
-                    totalPrice += (PRICE * qty);
-                    totalItems += qty;
-                    cout << "Added in cart" << endl;
-                }
+    public:
+    void showProducts() {
+        
+            for (int i = 0; i < index; i++) {
+                products[i].getInfo();
             }
-        }
-        product.close();
+        
     }
 
-    void placeOrder()
-    {
-        ofstream outfile("product.txt", ios::app);
-        ifstream infile("product.txt");
-        ofstream tempfile("temp.txt", ios::app);
-
-        int ID, PRICE, QTY;
-        string Name, type;
-
-        while (infile >> ID >> Name >> PRICE >> QTY >> type)
-        {
-            for (int i = 0; i < index; i++)
-            {
-                if (Name == products[i].getProductName())
-                {
-                    int remainingQty = QTY - products[i].getquantity();
-                    if (remainingQty >= 0)
-                    {
-                        tempfile << ID << "\t" << Name << "\t" << PRICE << "\t" << remainingQty << "\t" << type << endl;
-                        break;
-                    }
-                    else
-                    {
-                        cout << "Insufficient quantity available for product: " << Name << endl;
-                    }
-                }
-                else
-                {
-                    tempfile << ID << "\t" << Name << "\t" << PRICE << "\t" << QTY << "\t" << type << endl;
-                }
-            }
-        }
-
-        infile.close();
-        outfile.close();
-        tempfile.close();
-
-        remove("product.txt");
-        rename("temp.txt", "product.txt");
-
-        totalItems = 0;
-        totalPrice = 0;
-        index = 0;
-
-        cout << "Order placed successfully!" << endl;
-        getInput();
+    void addProduct(string name, string id, string price,string qty) {
+        Product prod(name, id, price, qty);
+        products[index] = prod;
+        index++;
+        totalItems++;
+        totalPrice += 12000;
     }
 
-    void getTotalPrice()
-    {
+    void getTotalPrice() {
         cout << "Total Items in Cart: " << totalItems << endl;
         cout << "Total Cart Price: " << totalPrice << endl;
-        getInput();
-
     }
 };
 int ShoppingCart::index = 0;
 int ShoppingCart::totalPrice = 0;
 int ShoppingCart::totalItems = 0;
-class Sport : public Product
-{
-private:
-    string Brand;
 
-public:
-    Sport() {}
-    friend istream &operator>>(istream &is, Sport &p)
-    {
-        ifstream in("product.txt");
-        int id, price, qty;
-        string name, warr;
-        while (in >> id >> name >> price >> qty >> warr)
-        {
-        }
-        p.productId = id + 1;
-        cout << "Product Name: ";
-        is >> p.productName;
 
-        cout << "Product Price: ";
-        is >> p.productPrice;
-        cout << "Enter Brand: ";
-        is >> p.Brand;
-        cout << "Product Quantity: ";
-        is >> p.productQty;
-        return is;
-    }
-    void add()
-    {
-
-        fstream product("product.txt", ios::app);
-        product << productId << "\t" << productName << "\t" << productPrice << "\t" << productQty << "\t" << Brand << endl;
-        product.close();
-    }
-};
-class Fashion : public Product
-{
-private:
-    string Material;
-
-public:
-    Fashion() {}
-    friend istream &operator>>(istream &is, Fashion &p)
-    {
-        ifstream in("product.txt");
-        int id, price, qty;
-        string name, material;
-        while (in >> id >> name >> price >> qty >> material)
-        {
-        }
-        p.productId = id + 1;
-        cout << "Product Name: ";
-        is >> p.productName;
-
-        cout << "Product Price: ";
-        is >> p.productPrice;
-        cout << "Enter Material: ";
-        is >> p.Material;
-        cout << "Product Quantity: ";
-        is >> p.productQty;
-        return is;
-    }
-    void add()
-    {
-
-        fstream product("product.txt", ios::app);
-        product << productId << "\t" << productName << "\t" << productPrice << "\t" << productQty << "\t" << Material << endl;
-        product.close();
-    }
-};
 class Person
 {
 private:
@@ -353,6 +113,8 @@ public:
     }
 };
 
+
+
 int main()
 {
     fstream userfile("User.txt", ios::app);
@@ -367,43 +129,30 @@ failed_case:
     bool login = false;
     cout << "1-Login\n";
     cout << "2-Register\n";
+    cout << "Enter Choice: ";
     int ch;
     string name, email, pass;
-    string name1, email1, pass1, userRole;
-    string productId, productName, productPrice, productQty, additionalInfo, type;
-
-    do
-    {
-
-        cout << "Enter Choice: ";
-        cin >> ch;
-    } while (ch > 3 || ch < 0);
+    string name1, email1, pass1;
+    string productId, productName, productPrice, productQty;
+    cin >> ch;
     Person p1;
     bool loginSuccessful = false;
     system("cls");
-    bool is_admin = false;
     if (ch == 1)
     {
         cout << "Enter Email:";
         cin >> email;
-        cout << "Enter Password: ";
+        cout << "Enter Pass:";
         cin >> pass;
         userfile.seekg(0, ios::beg);
         ifstream infile("User.txt");
-        while (infile >> name1 >> email1 >> pass1 >> userRole)
+        while (infile >> name1 >> email1 >> pass1)
         {
 
             if (email == email1 && pass == pass1)
             {
-                if (userRole=="1")
-                {
-                    is_admin = true;
-                    cout << "Welcome Admin\n";
-                }
                 cout << "Login Successful\n";
                 loginSuccessful = true;
-                cout << "Redirecting you to the homepage...";
-                sleep(3);
                 infile.close();
                 break;
             }
@@ -425,163 +174,42 @@ failed_case:
     }
 
     userfile.close();
+    
 
-    while (loginSuccessful)
-    {
-        system("cls");
-        showLogo();
-    cout << "Welcome to AZ MARKET" << endl;
-    cout << "Choose your option: " << endl;
-        cout << "1 - Show products " << endl;
+        cout << "Welcome to Daraz CMD" << endl;
+    while(loginSuccessful) {
+        cout << "1 - Show All products " << endl;
         cout << "2 - Add Product to Cart " << endl;
         cout << "3 - Show Cart " << endl;
         cout << "4 - Show Cart Details" << endl;
-        cout << "5 - Place order" << endl;
-
-        cout << "6 - Logout" << endl;
-        if (is_admin)
-        {
-    cout << "----------------Admin----------------\n";
-            cout << "7 - Add Product" << endl;
-        }
         cin >> ch;
 
-        if (ch == 1)
-        {
-            system("cls");
-            ifstream infile("product.txt");
+        if (ch == 1) {
+        ifstream infile("products.txt");
+        cout << "==========================================================================="<<endl;
+        cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(20) << "Name" <<endl;
+        cout << "==========================================================================="<<endl;
 
-            if (!infile.is_open())
-            {
-                cout << "Error" << endl;
-            }
 
-            int choi;
-            cout << "Category:" << endl;
-            cout << "1- Electronic" << endl;
-            cout << "2- Fashion" << endl;
-            cout << "3- Sports" << endl;
-            do
-            {
-                cout << "Enter Choice: ";
-                cin >> choi;
-            } while (choi > 3);
-            if (choi == 1)
-            {
-                cout << "=================================================================================================" << endl;
-                cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(18) << "Name" << setw(18) << "Type" << setw(18) << "Warranty" << endl;
-                cout << "=================================================================================================" << endl;
-
-                while (infile >> productId >> productName >> productPrice >> productQty >> type >> additionalInfo)
-                {
-                    // replace(productName.begin(), productName.end(), '_', ' ');
-        if (type == "Electronics") {
-                    cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(20) << productName << setw(18) << type <<  setw(18) << additionalInfo << endl;
-                    getInput();
+        while(infile >> productId >> productName >> productPrice >> productQty) {
+            replace(productName.begin(), productName.end(), '_', ' ');
+            cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(40) << productName << endl;
 
         }
-                }
-                infile.close();
-            }
-            else if (choi == 2)
-            {
-
-                cout << "=================================================================================================" << endl;
-                cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(18) << "Name" << setw(18) << "Category" << setw(18) << "Material"  << endl;
-                cout << "=================================================================================================" << endl;
-
-                while (infile >> productId >> productName >> productPrice >> productQty >> type >> additionalInfo)
-                {
-                    // replace(productName.begin(), productName.end(), '_', ' ');
-
-                     if (type == "Fashion") {
-                    cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(20) << productName << setw(18) << type << endl;
-                    getInput();
-
+infile.close();
         }
-                }
-                infile.close();
-            }
-            else if (choi == 3)
-            {
-
-                cout << "=================================================================================================" << endl;
-                cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(18) << "Name" << setw(18) << "Category" << setw(18) << "Brand" << endl;
-                cout << "=================================================================================================" << endl;
-
-                while (infile >> productId >> productName >> productPrice >> productQty >> type >> additionalInfo)
-                {
-                    // replace(productName.begin()Pre, productName.end(), '_', ' ');
-  if (type == "Sports") {
-                    cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(20) << productName << setw(18) << type << setw(18) << additionalInfo << endl;
-                    getInput();
-                    
+        
+        else if (ch == 2) {
+            cart.addProduct("Mobile", "2", "15000", "14");
         }
- }
-                infile.close();
-            }
-        }
-
-        else if (ch == 2)
-        {
-            int qty;
-            int choice;
-            cout << "Enter Poduct ID: ";
-            cin >> choice;
-            cout << "Enter Quantity: ";
-            cin >> qty;
-            cart.addProduct(choice, qty);
-            cout << "Product added to the cart" << endl;
-            getInput();
-
-        }
-        else if (ch == 3)
-        {
+        else if (ch == 3) {
             cart.showProducts();
         }
-        else if (ch == 4)
-        {
+        else if (ch == 4) {
             cart.getTotalPrice();
         }
-        else if (ch == 5)
-        {
-            cart.placeOrder();
-        }
-        else if (ch == 7 && is_admin)
-        {
-            int choi;
-            cout << "Category:" << endl;
-            cout << "1- Electronic" << endl;
-            cout << "2- Fashion" << endl;
-            cout << "3- Sports" << endl;
-            do
-            {
-                cout << "Enter Choice: ";
-                cin >> choi;
-            } while (choi > 3);
-            if (choi == 1)
-            {
-                Electronic E;
-                cin >> E;
-                E.add();
-            }
-            if (choi == 2)
-            {
-                Fashion F;
-                cin >> F;
-                F.add();
-            }
-            if (choi == 3)
-            {
-                Sport s;
-                cin >> s;
-                s.add();
-            }
-        }
-        else if (ch == 6)
-        {
-            return 0;
-        }
+
+
     }
 
     return 0;
