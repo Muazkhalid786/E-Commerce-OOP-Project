@@ -5,8 +5,25 @@
 #include <algorithm>
 #include <iomanip>
 #include <cstdlib>
+#include <unistd.h>
 using namespace std;
 
+void showLogo() {
+cout<<"     ___            ________     .___  ___.      ___      .______       __  ___  _______ .___________." << endl;
+cout<<"    /   \\          |       /     |   \\/   |     /   \\     |   _  \\     |  |/  / |   ____||           |" << endl;
+cout<<"   /  ^  \\   ______`---/  /      |  \\  /  |    /  ^  \\    |  |_)  |    |  '  /  |  |__   `---|  |----`"<<endl;
+cout<<"  /  /_\\  \\ |______|  /  /       |  |\\/|  |   /  /_\\  \\   |      /     |    <   |   __|      |  | " << endl;    
+cout<<" /  _____  \\         /  /----.   |  |  |  |  /  _____  \\  |  |\\  \\----.|  .  \\  |  |____     |  |   "<<endl;  
+cout<<"/__/     \\__\\       /________|   |__|  |__| /__/     \\__\\ | _| `._____||__|\\__\\ |_______|    |__|  " << endl;
+                                                                                                         
+
+}
+
+void getInput() {
+    string pauseInput;
+    cout << endl << "Press any key & enter to go back to homepage" << endl;
+    cin >>pauseInput;
+}
 class Product
 {
 protected:
@@ -129,6 +146,9 @@ public:
         {
             products[i].getInfo();
         }
+        cout << endl;
+ 
+        getInput();
     }
 
     void addProduct(int choice, int qty)
@@ -208,12 +228,15 @@ public:
         index = 0;
 
         cout << "Order placed successfully!" << endl;
+        getInput();
     }
 
     void getTotalPrice()
     {
         cout << "Total Items in Cart: " << totalItems << endl;
         cout << "Total Cart Price: " << totalPrice << endl;
+        getInput();
+
     }
 };
 int ShoppingCart::index = 0;
@@ -346,8 +369,9 @@ failed_case:
     cout << "2-Register\n";
     int ch;
     string name, email, pass;
-    string name1, email1, pass1;
-    string productId, productName, productPrice, productQty, type;
+    string name1, email1, pass1, userRole;
+    string productId, productName, productPrice, productQty, additionalInfo, type;
+
     do
     {
 
@@ -362,22 +386,24 @@ failed_case:
     {
         cout << "Enter Email:";
         cin >> email;
-        cout << "Enter Pass:";
+        cout << "Enter Password: ";
         cin >> pass;
         userfile.seekg(0, ios::beg);
         ifstream infile("User.txt");
-        while (infile >> name1 >> email1 >> pass1)
+        while (infile >> name1 >> email1 >> pass1 >> userRole)
         {
 
             if (email == email1 && pass == pass1)
             {
-                if (email == "itzmajo786@gmail.com" || email == "11")
+                if (userRole=="1")
                 {
                     is_admin = true;
                     cout << "Welcome Admin\n";
                 }
                 cout << "Login Successful\n";
                 loginSuccessful = true;
+                cout << "Redirecting you to the homepage...";
+                sleep(3);
                 infile.close();
                 break;
             }
@@ -400,9 +426,12 @@ failed_case:
 
     userfile.close();
 
-    cout << "Welcome to Daraz CMD" << endl;
     while (loginSuccessful)
     {
+        system("cls");
+        showLogo();
+    cout << "Welcome to AZ MARKET" << endl;
+    cout << "Choose your option: " << endl;
         cout << "1 - Show products " << endl;
         cout << "2 - Add Product to Cart " << endl;
         cout << "3 - Show Cart " << endl;
@@ -412,6 +441,7 @@ failed_case:
         cout << "6 - Logout" << endl;
         if (is_admin)
         {
+    cout << "----------------Admin----------------\n";
             cout << "7 - Add Product" << endl;
         }
         cin >> ch;
@@ -439,45 +469,55 @@ failed_case:
             if (choi == 1)
             {
                 cout << "=================================================================================================" << endl;
-                cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(18) << "Name" << setw(18) << "Warranty" << endl;
+                cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(18) << "Name" << setw(18) << "Type" << setw(18) << "Warranty" << endl;
                 cout << "=================================================================================================" << endl;
 
-                while (infile >> productId >> productName >> productPrice >> productQty >> type)
+                while (infile >> productId >> productName >> productPrice >> productQty >> type >> additionalInfo)
                 {
                     // replace(productName.begin(), productName.end(), '_', ' ');
+        if (type == "Electronics") {
+                    cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(20) << productName << setw(18) << type <<  setw(18) << additionalInfo << endl;
+                    getInput();
 
-                    cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(20) << productName << setw(18) << type << endl;
+        }
                 }
                 infile.close();
             }
-            if (choi == 2)
+            else if (choi == 2)
             {
 
                 cout << "=================================================================================================" << endl;
-                cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(18) << "Name" << setw(18) << "Material" << endl;
+                cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(18) << "Name" << setw(18) << "Category" << setw(18) << "Material"  << endl;
                 cout << "=================================================================================================" << endl;
 
-                while (infile >> productId >> productName >> productPrice >> productQty >> type)
+                while (infile >> productId >> productName >> productPrice >> productQty >> type >> additionalInfo)
                 {
                     // replace(productName.begin(), productName.end(), '_', ' ');
 
+                     if (type == "Fashion") {
                     cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(20) << productName << setw(18) << type << endl;
+                    getInput();
+
+        }
                 }
                 infile.close();
             }
-            if (choi == 3)
+            else if (choi == 3)
             {
 
                 cout << "=================================================================================================" << endl;
-                cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(18) << "Name" << setw(18) << "Brand" << endl;
+                cout << "Id" << setw(20) << "Amount" << setw(20) << "Quantity" << setw(18) << "Name" << setw(18) << "Category" << setw(18) << "Brand" << endl;
                 cout << "=================================================================================================" << endl;
 
-                while (infile >> productId >> productName >> productPrice >> productQty >> type)
+                while (infile >> productId >> productName >> productPrice >> productQty >> type >> additionalInfo)
                 {
-                    // replace(productName.begin(), productName.end(), '_', ' ');
-
-                    cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(20) << productName << setw(18) << type << endl;
-                }
+                    // replace(productName.begin()Pre, productName.end(), '_', ' ');
+  if (type == "Sports") {
+                    cout << productId << setw(20) << productPrice << setw(20) << productQty << setw(20) << productName << setw(18) << type << setw(18) << additionalInfo << endl;
+                    getInput();
+                    
+        }
+ }
                 infile.close();
             }
         }
@@ -491,6 +531,9 @@ failed_case:
             cout << "Enter Quantity: ";
             cin >> qty;
             cart.addProduct(choice, qty);
+            cout << "Product added to the cart" << endl;
+            getInput();
+
         }
         else if (ch == 3)
         {

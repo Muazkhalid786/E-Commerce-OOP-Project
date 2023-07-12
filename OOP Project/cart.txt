@@ -1,1 +1,1 @@
-1	iphone	50000	10		2-year
+1	iphone	50000	3		Electronics
